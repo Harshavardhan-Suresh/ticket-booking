@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entertainment Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            margin-top: 0;
+        }
+
+        .no-tickets {
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .card {
+            display: flex;
+            align-items: center;
+        }
+
+        .card-image {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .card-details {
+            flex: 1;
+            padding: 20px;
+        }
+        @page {
+            size: A4;
+            margin: 20mm 10mm;
+        }
+
+        .container {
+            page-break-inside: avoid;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .card-image {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .card-details {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Details</h1>
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+
+        <h1>Ratings You Gave Last Month</h1>
+        <ul>
+            {% for rating in ratings %}
+            <li>{{ rating.show_name }} - {{ rating.rating }}</li>
+            {% endfor %}
+        </ul>
+        {% if rating|length == 0 %}
+            <div class="no-tickets">
+                No Rating Booked by User
+            </div>
+        {% endif %}
+        <h1>Bookings You Made Last Month</h1>
+        <div class="venues1">
+            {% for ticket in tickets %}
+            <div class="card">
+                <div class="card-details">
+                    <h3 class="card-title">{{ ticket.show_name }}</h3>
+                    <p class="card-text">Venue: {{ ticket.venue_name }}</p>
+                    <p class="card-text">Time: {{ ticket.time_and_date }}</p>
+                    <p class="card-text">No. of Seats: {{ ticket.no_of_seats }}</p>
+                    <p class="card-text">Price: Rs {{ ticket.total_price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% if tickets|length == 0 %}
+            <div class="no-tickets">
+                No Tickets Booked by User
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
