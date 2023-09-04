@@ -1,0 +1,615 @@
+openapi: 3.0.0
+servers:
+  - description: Ticket booking app 
+    url: http://127.0.0.1:5000
+info:
+  version: "1.0.0"
+  title: Ticket Booking application
+  description: API documentation for ticket booking app created by Harshavardhan.
+  contact:
+    email: 21f1005522@student.onlinedegree.iitm.ac.in
+paths:
+  /api/show/add:
+    post:
+      tags:
+          - shows
+      description: Add a new show to the library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the show
+                poster:
+                  type: string
+                  description: The URL of the show poster
+      responses:
+        '200':
+          description: The show was added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: show created successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request body
+  /api/show/all:
+    get:
+      tags:
+          - shows
+      description: Get all shows in the library
+      responses:
+        '200':
+          description: A list of all shows in the library
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: The Godfather
+                        poster:
+                          type: string
+                          example: https://example.com/the-godfather-poster.jpg
+                        cast:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: Marlon Brando
+                              photo:
+                                type: string
+                                example: https://example.com/marlon-brando.jpg
+                        rating:
+                          type: number
+                          format: float
+                          example: 8.7
+                          
+  /api/show/{id}:
+    get:
+      tags:
+          - shows
+      description: Retrieve details of a specific movie/show by ID.
+      responses:
+        '200':
+          description: Details of the requested movie/show.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the movie/show.
+                  name:
+                    type: string
+                    description: The name of the movie/show.
+                  poster:
+                    type: string
+                    description: The URL of the poster for the movie/show.
+                  cast:
+                    type: array
+                    description: The cast members of the movie/show.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: The name of the cast member.
+                        photo:
+                          type: string
+                          description: The URL of the photo of the cast member.
+                  rating:
+                    type: number
+                    description: The average rating of the movie/show.
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie/show.
+          required: true
+          schema:
+            type: integer
+    put:
+      tags:
+          - shows
+      description: Update details of a specific movie/show by ID.
+      responses:
+        '200':
+          description: Details of the updated movie/show.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message indicating that the movie/show was updated successfully.
+      parameters:  
+        - name: id
+          in: path
+          description: The ID of the movie/show.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The new name of the movie/show.
+                poster:
+                  type: string
+                  description: The new URL of the poster for the movie/show.
+    delete:
+      tags:
+          - shows
+      description: Delete a specific movie/show by ID.
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie/show.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A message indicating that the movie/show was deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message indicating that the movie/show was deleted successfully.
+        '404':
+          description: A message indicating that the specified movie/show does not exist.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A message indicating that the specified movie/show does not exist.
+                    
+  /api/screen/add:
+    post:
+      tags: 
+        - screens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                show_id:
+                  type: integer
+                  description: ID of the show
+                venue_id:
+                  type: integer
+                  description: ID of the venue
+                timing:
+                  type: string
+                  format: date-time
+                  description: Timing of the screen in the format YYYY/MM/DD HH:MM:SS
+                price:
+                  type: number
+                  format: float
+                  description: Price of the screen
+      responses:
+        '200':
+          description: Screen created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating that the screen was created successfully
+        '404':
+          description: Venue does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the venue does not exist
+        '405':
+          description: Show does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the show does not exist
+  /api/screen/all:
+    get:
+      tags: 
+        - screens
+      summary: Retrieve all screens
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  screens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        venue_id:
+                          type: integer
+                        show_id:
+                          type: integer
+                        venue:
+                          type: string
+                        show:
+                          type: string
+                        timing:
+                          type: string
+                          format: date-time
+                        price:
+                          type: integer
+                example:
+                  screens:
+                    - id: 1
+                      venue_id: 1
+                      show_id: 1
+                      venue: "Venue A"
+                      show: "Show A"
+                      timing: "2023-03-28 10:00:00"
+                      price: 10
+                    - id: 2
+                      venue_id: 2
+                      show_id: 2
+                      venue: "Venue B"
+                      show: "Show B"
+                      timing: "2023-03-29 12:00:00"
+                      price: 15
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+  /api/screen/{id1}:
+    get:
+      tags:
+      - screens
+      description: Retrieve a single screen object by ID
+      responses:
+        200:
+          description: Successful operation, returns a screen object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the screen
+                  timing:
+                    type: string
+                    format: date-time
+                    description: The timing of the screen in ISO date-time format
+                  venue:
+                    type: string
+                    description: The name of the venue where the screen is held
+                  venue_id:
+                    type: integer
+                    description: The ID of the venue where the screen is held
+                  show:
+                    type: string
+                    description: The name of the show being screened
+                  show_id:
+                    type: integer
+                    description: The ID of the show being screened
+                  price:
+                    type: number
+                    description: The price of the screen
+        404:
+          description: Screen not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+    put:
+      tags:
+      - screens
+      description: Update a single screen object by ID
+      requestBody:
+        description: Screen object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timing:
+                  type: string
+                  format: date-time
+                  description: The updated timing of the screen in ISO date-time format
+                venue_id:
+                  type: integer
+                  description: The updated ID of the venue where the screen is held
+                show_id:
+                  type: integer
+                  description: The updated ID of the show being screened
+                price:
+                  type: number
+                  description: The updated price of the screen
+      responses:
+        200:
+          description: Screen object updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The success message
+        404:
+          description: Screen not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+    delete:
+      tags:
+        - screens
+      description: Delete a single screen object by ID
+      responses:
+        200:
+          description: Screen object deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The success message
+        404:
+          description: Screen not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+  /api/venue/all:
+    get:
+      tags: 
+        - venues
+      description: Retrieve a list of all venues
+      responses:
+        200:
+          description: Successful operation, returns a list of venue objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  venues:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the venue
+                        name:
+                          type: string
+                          description: The name of the venue
+                        city:
+                          type: string
+                          description: The city where the venue is located
+                        address:
+                          type: string
+                          description: The address of the venue
+                        capacity:
+                          type: integer
+                          description: The maximum capacity of the venue
+        404:
+          description: Venues not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+
+  /api/venue/add:
+    post:
+      tags: 
+        - venues
+      description: Add a new venue
+      requestBody:
+        description: Venue object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the venue
+                city:
+                  type: string
+                  description: The city where the venue is located
+                address:
+                  type: string
+                  description: The address of the venue
+                capacity:
+                  type: integer
+                  description: The capacity of the venue
+      responses:
+        201:
+          description: Venue added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The success message
+                    example: Venue added successfully
+        400:
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+  /api/venue/{id1}:
+    get:
+      tags: 
+      - venues
+      summary: Get venue by ID
+      parameters:
+        - name: id1
+          in: path
+          description: ID of the venue to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Venue object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  city:
+                    type: string
+                  address:
+                    type: string
+                  capacity:
+                    type: integer
+                example:
+                  id: 1
+                  name: Venue A
+                  city: New York
+                  address: 123 Main St
+                  capacity: 1000
+        '404':
+          description: Venue not found
+    put:
+      tags: 
+      - venues
+      summary: Update venue by ID
+      parameters:
+        - name: id1
+          in: path
+          description: ID of the venue to update
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: body
+          description: Request body for updating venue
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              city:
+                type: string
+              address:
+                type: string
+              capacity:
+                type: integer
+            example:
+              name: Venue A
+              city: New York
+              address: 123 Main St
+              capacity: 1000
+      responses:
+        '200':
+          description: Venue updated successfully
+        '403':
+          description: Invalid request body
+        '404':
+          description: Venue not found
+    delete:
+      tags: 
+      - venues
+      summary: Delete venue by ID
+      parameters:
+        - name: id1
+          in: path
+          description: ID of the venue to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Venue deleted successfully
+        '404':
+          description: Venue not found
